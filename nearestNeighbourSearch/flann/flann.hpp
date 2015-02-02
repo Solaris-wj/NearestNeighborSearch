@@ -87,14 +87,14 @@ public:
         flann_algorithm_t index_type = get_param<flann_algorithm_t>(params,"algorithm");
         loaded_ = false;
 
-        Matrix<ElementType> features;
+        //Matrix<ElementType> features;
         if (index_type == FLANN_INDEX_SAVED) {
-            nnIndex_ = load_saved_index(features, get_param<std::string>(params,"filename"), distance);
+            nnIndex_ = load_saved_index( get_param<std::string>(params,"filename"), distance);
             loaded_ = true;
         }
         else {
         	flann_algorithm_t index_type = get_param<flann_algorithm_t>(params, "algorithm");
-            nnIndex_ = create_index_by_type<Distance>(index_type, features, params, distance);
+            nnIndex_ = create_index_by_type<Distance>(index_type, params, distance);
         }
     }
 
@@ -135,12 +135,12 @@ public:
     /**
      * Builds the index.
      */
-    void buildIndex()
-    {
-        if (!loaded_) {
-            nnIndex_->buildIndex();
-        }
-    }
+    //void buildIndex()
+    //{
+    //    if (!loaded_) {
+    //        nnIndex_->buildIndex();
+    //    }
+    //}
 
     void buildIndex(const Matrix<ElementType>& points)
     {
@@ -369,7 +369,7 @@ public:
     }
 
 private:
-    IndexType* load_saved_index(const Matrix<ElementType>& dataset, const std::string& filename, Distance distance)
+    IndexType* load_saved_index(const std::string& filename, Distance distance)
     {
         FILE* fin = fopen(filename.c_str(), "rb");
         if (fin == NULL) {
@@ -382,7 +382,7 @@ private:
 
         IndexParams params;
         params["algorithm"] = header.h.index_type;
-        IndexType* nnIndex = create_index_by_type<Distance>(header.h.index_type, dataset, params, distance);
+        IndexType* nnIndex = create_index_by_type<Distance>(header.h.index_type,  params, distance);
         rewind(fin);
         nnIndex->loadIndex(fin);
         fclose(fin);

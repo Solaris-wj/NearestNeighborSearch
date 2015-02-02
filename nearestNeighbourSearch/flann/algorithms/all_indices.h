@@ -102,23 +102,24 @@ namespace flann
     /*********************************************************
      * Create index
      **********************************************************/
-    template <template<typename> class IndexType, typename Distance, typename T>
-    inline NNIndex<Distance>* create_index_(flann::Matrix<T> data, const flann::IndexParams& params, const Distance& distance,
-                                            typename enable_if<valid_combination<IndexType, Distance, T>::value, void>::type* = 0)
-    {
-        return new IndexType<Distance>(data, params, distance);
-    }
 
     template <template<typename> class IndexType, typename Distance, typename T>
-    inline NNIndex<Distance>* create_index_(flann::Matrix<T> data, const flann::IndexParams& params, const Distance& distance,
-                                            typename disable_if<valid_combination<IndexType, Distance, T>::value, void>::type* = 0)
+    inline NNIndex<Distance>* create_index_(const flann::IndexParams& params, const Distance& distance,
+                                            typename enable_if<valid_combination<IndexType, Distance, T>::value, void>::type* = 0)
     {
-        return NULL;
+        return new IndexType<Distance>( params, distance);
     }
+
+    //template <template<typename> class IndexType, typename Distance, typename T>
+//     inline NNIndex<Distance>* create_index_(flann::Matrix<T> data, const flann::IndexParams& params, const Distance& distance,
+//                                             typename disable_if<valid_combination<IndexType, Distance, T>::value, void>::type* = 0)
+//     {
+//         return NULL;
+//     }
 
     template<typename Distance>
     inline NNIndex<Distance>* create_index_by_type(const flann_algorithm_t index_type, 
-                                                   const Matrix<typename Distance::ElementType>& dataset, const IndexParams& params, const Distance& distance)
+                                                   const IndexParams& params, const Distance& distance)
     {
             typedef typename Distance::ElementType ElementType;
 
@@ -127,7 +128,7 @@ namespace flann
             switch (index_type)
             {
                 case FLANN_INDEX_MULTITHREAD:
-                    nnIndex = create_index_<MultiThreadHierarchicalIndex, Distance, ElementType>(dataset, params, distance);
+                    nnIndex = create_index_<MultiThreadHierarchicalIndex, Distance, ElementType>( params, distance);
                     break;
                 default:
                     throw FLANNException("Unknown index type");

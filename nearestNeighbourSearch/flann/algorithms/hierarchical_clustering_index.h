@@ -116,23 +116,23 @@ public:
      *          inputData = dataset with the input features
      *          params = parameters passed to the hierarchical k-means algorithm
      */
-    MultiThreadHierarchicalIndex(const Matrix<ElementType>& inputData, const IndexParams& index_params = MultiThreadHierarchicalIndexParams(),
-                                Distance d = Distance())
-        : BaseClass(index_params, d)
-    {
-        memoryCounter_ = 0;
+    //MultiThreadHierarchicalIndex(const Matrix<ElementType>& inputData, const IndexParams& index_params = MultiThreadHierarchicalIndexParams(),
+    //                            Distance d = Distance())
+    //    : BaseClass(index_params, d)
+    //{
+    //    memoryCounter_ = 0;
 
-        branching_ = get_param(index_params_,"branching",32);
-        centers_init_ = get_param(index_params_,"centers_init", FLANN_CENTERS_RANDOM);
-        trees_ = get_param(index_params_,"trees",4);
-        leaf_max_size_ = get_param(index_params_,"leaf_max_size",100);
+    //    branching_ = get_param(index_params_,"branching",32);
+    //    centers_init_ = get_param(index_params_,"centers_init", FLANN_CENTERS_RANDOM);
+    //    trees_ = get_param(index_params_,"trees",4);
+    //    leaf_max_size_ = get_param(index_params_,"leaf_max_size",100);
 
-        initCenterChooser();
-        
-        setDataset(inputData);
+    //    initCenterChooser();
+    //    
+    //    setDataset(inputData);
 
-        chooseCenters_->setDataSize(veclen_);
-    }
+    //    chooseCenters_->setDataSize(veclen_);
+    //}
 
 
     MultiThreadHierarchicalIndex(const MultiThreadHierarchicalIndex& other) : BaseClass(other),
