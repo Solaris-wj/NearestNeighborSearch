@@ -32,6 +32,8 @@
 #define FLANN_NNINDEX_H
 
 #include <vector>
+#include <queue>
+#include <unordered_map>
 
 #include "../general.h"
 #include "../util/matrix.h"
@@ -134,22 +136,7 @@ public:
 
 	}
 
-	/**
-	 * Builds the index using the specified dataset
-	 * @param dataset the dataset to use
-	 */
-    virtual void buildIndex(const Matrix<ElementType>& dataset)
-    {
-        setDataset(dataset);
-        this->buildIndex();
-    }
-
-	/**
-	 * @brief Incrementally add points to the index.
-	 * @param points Matrix with points to be added
-	 * @param rebuild_threshold
-	 */
-    virtual void addPoints(const Matrix<ElementType>& points, float rebuild_threshold = 2)
+    virtual std::vector<size_t> addPoints(const Matrix<ElementType>& points, float rebuild_threshold = 2)
     {
         throw FLANNException("Functionality not supported by this index");
     }
@@ -160,14 +147,16 @@ public:
      */
     virtual void removePoint(size_t id)
     {
-    	if (!removed_) {
-    		ids_.resize(size_);
-    		for (size_t i=0;i<size_;++i) {
-    			ids_[i] = i;
-    		}
+    	if (!removed_) 
+        {
+//     		ids_.resize(size_);
+//     		for (size_t i=0;i<size_;++i)
+//             {
+//     			ids_[i] = i;
+//     		}
     		removed_points_.resize(size_);
     		removed_points_.reset();
-    		last_id_ = size_;
+//    		last_id_ = size_;
         	removed_ = true;
     	}
 
@@ -176,6 +165,8 @@ public:
     		removed_points_.set(point_index);
     		removed_count_++;
     	}
+        available_ids.push(id);
+        id2index.erase(id);
     }
 
 
@@ -706,31 +697,13 @@ protected:
 
     size_t id_to_index(size_t id)
     {
-    	if (ids_.size()==0) {
-    		return id;
-    	}
     	size_t point_index = size_t(-1);
-    	if (id < ids_.size() && ids_[id]==id) {
+    	if (id < ids_.size() && ids_[id]==id) 
+        {
     		return id;
     	}
     	else {
-    		// binary search
-    		size_t start = 0;
-    		size_t end = ids_.size();
-
-    		while (start<end) {
-    			size_t mid = (start+end)/2;
-    			if (ids_[mid]==id) {
-    				point_index = mid;
-    				break;
-    			}
-    			else if (ids_[mid]<id) {
-    				start = mid + 1;
-    			}
-    			else {
-    				end = mid;
-    			}
-    		}
+            return id2index.at(id);
     	}
     	return point_index;
     }
@@ -747,43 +720,63 @@ protected:
 		}
     }
 
-    void setDataset(const Matrix<ElementType>& dataset)
+//     void setDataset(const Matrix<ElementType>& dataset)
+//     {
+//     	size_ = dataset.rows;
+//     	veclen_ = dataset.cols;
+//     	last_id_ = 0;
+// 
+//     	ids_.clear();
+//     	removed_points_.clear();
+//     	removed_ = false;
+//     	removed_count_ = 0;
+// 
+//     	points_.resize(size_);
+//     	for (size_t i=0;i<size_;++i) {
+//     		points_[i] = dataset[i];
+//     	}
+//     }
+
+    size_t next_id()
     {
-    	size_ = dataset.rows;
-    	veclen_ = dataset.cols;
-    	last_id_ = 0;
-
-    	ids_.clear();
-    	removed_points_.clear();
-    	removed_ = false;
-    	removed_count_ = 0;
-
-    	points_.resize(size_);
-    	for (size_t i=0;i<size_;++i) {
-    		points_[i] = dataset[i];
-    	}
+        if (available_ids.empty())
+            return last_id_++;
+        else
+        {
+            size_t id = available_ids.front();
+            available_ids.pop();
+            return id;
+        }        
     }
-
-    void extendDataset(const Matrix<ElementType>& new_points)
+    std::vector<size_t> extendDataset(const Matrix<ElementType>& new_points)
     {
+        std::vector<size_t> vec_ret;
+
         veclen_ = new_points.cols;
     	size_t new_size = size_ + new_points.rows;
     	if (removed_) 
         {
     		removed_points_.resize(new_size);
-    		ids_.resize(new_size);
+    		//ids_.resize(new_size);
     	}
+        ids_.resize(new_size);
+
     	points_.resize(new_size);
     	for (size_t i=size_;i<new_size;++i) 
         {
     		points_[i] = new_points[i-size_];
+            ids_[i] = next_id();
+            id2index.insert(make_pair(ids_[i], i));
+            vec_ret.push_back(ids_[i]);
     		if (removed_)
             {
-    			ids_[i] = last_id_++;
+    			//ids_[i] = last_id_++;
     			removed_points_.reset(i);
     		}
     	}
     	size_ = new_size;
+
+        return vec_ret;
     }
 
 
@@ -839,7 +832,7 @@ protected:
      * index.
      */
     size_t last_id_;
-
+    std::queue<size_t> available_ids;
     /**
      * Number of points in the index (and database)
      */
@@ -876,12 +869,13 @@ protected:
     size_t removed_count_;
 
     /**
-     * Array of point IDs, returned by nearest-neighbour operations
+     * Array of point IDs, returned by nearest-neighbour operations, is a map from index to id , the index is point index in data member vector<ElementType*> points_;
      */
     std::vector<size_t> ids_;
-
+    // reversed map of above ids, from id to index;
+    std::unordered_map<size_t, size_t> id2index;
     /**
-     * Point data
+     * Point data, pointers to head of data row
      */
     std::vector<ElementType*> points_;
 
@@ -895,21 +889,19 @@ protected:
 
 
 #define USING_BASECLASS_SYMBOLS \
-		using NNIndex<Distance>::distance_;\
-		using NNIndex<Distance>::size_;\
-		using NNIndex<Distance>::size_at_build_;\
-		using NNIndex<Distance>::veclen_;\
-		using NNIndex<Distance>::index_params_;\
-		using NNIndex<Distance>::removed_points_;\
-		using NNIndex<Distance>::ids_;\
-		using NNIndex<Distance>::removed_;\
-		using NNIndex<Distance>::points_;\
-		using NNIndex<Distance>::extendDataset;\
-		using NNIndex<Distance>::setDataset;\
-		using NNIndex<Distance>::cleanRemovedPoints;\
-		using NNIndex<Distance>::indices_to_ids;
-
-
+    using NNIndex<Distance>::distance_; \
+    using NNIndex<Distance>::size_; \
+    using NNIndex<Distance>::size_at_build_; \
+    using NNIndex<Distance>::veclen_; \
+    using NNIndex<Distance>::index_params_; \
+    using NNIndex<Distance>::removed_points_; \
+    using NNIndex<Distance>::ids_; \
+    using NNIndex<Distance>::id2index;\
+    using NNIndex<Distance>::removed_;\
+    using NNIndex<Distance>::points_;\
+    using NNIndex<Distance>::extendDataset;\
+    using NNIndex<Distance>::cleanRemovedPoints;\
+    using NNIndex<Distance>::indices_to_ids;
 
 }
 

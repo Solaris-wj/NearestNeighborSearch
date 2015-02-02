@@ -63,7 +63,7 @@ int main()
     MultiThreadIndex<L2<float>> index(params);
 
     //index.buildIndex();
-    index.addPoints(dataset2);
+    vector<size_t> id2 = index.addPoints(dataset2);
 
     index.knnSearch(query, indices, dist, knn, SearchParams());
 
@@ -77,7 +77,7 @@ int main()
 
     index.knnSearch(query, indices, dist, knn, SearchParams());
 
-    index.addPoints(dataset3);
+    vector<size_t> id3 = index.addPoints(dataset3);
 
 
     index.knnSearch(query, indices, dist, knn, SearchParams());

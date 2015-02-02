@@ -108,33 +108,6 @@ public:
         initCenterChooser();
     }
 
-
-    /**
-     * Index constructor
-     *
-     * Params:
-     *          inputData = dataset with the input features
-     *          params = parameters passed to the hierarchical k-means algorithm
-     */
-    //MultiThreadHierarchicalIndex(const Matrix<ElementType>& inputData, const IndexParams& index_params = MultiThreadHierarchicalIndexParams(),
-    //                            Distance d = Distance())
-    //    : BaseClass(index_params, d)
-    //{
-    //    memoryCounter_ = 0;
-
-    //    branching_ = get_param(index_params_,"branching",32);
-    //    centers_init_ = get_param(index_params_,"centers_init", FLANN_CENTERS_RANDOM);
-    //    trees_ = get_param(index_params_,"trees",4);
-    //    leaf_max_size_ = get_param(index_params_,"leaf_max_size",100);
-
-    //    initCenterChooser();
-    //    
-    //    setDataset(inputData);
-
-    //    chooseCenters_->setDataSize(veclen_);
-    //}
-
-
     MultiThreadHierarchicalIndex(const MultiThreadHierarchicalIndex& other) : BaseClass(other),
     		memoryCounter_(other.memoryCounter_),
     		branching_(other.branching_),
@@ -204,25 +177,28 @@ public:
     
     using BaseClass::buildIndex;
 
-    void addPoints(const Matrix<ElementType>& points, float rebuild_threshold = 2)
+    std::vector<size_t> addPoints(const Matrix<ElementType>& points, float rebuild_threshold = 2)
     {
-        assert(veclen_==0 || points.cols==veclen_);
+        assert(veclen_ == 0 || points.cols == veclen_);
         size_t old_size = size_;
 
-        extendDataset(points);
-        
-        if (rebuild_threshold>1 && size_at_build_*rebuild_threshold<size_) {
+        vector<size_t> vec_ret=extendDataset(points);
+
+        if (rebuild_threshold > 1 && size_at_build_*rebuild_threshold < size_) {
             buildIndex();
         }
         else {
-            for (size_t i=0;i<points.rows;++i) {
-                for (int j = 0; j < trees_; j++) {
+            for (size_t i = 0; i < points.rows; ++i)
+            {
+                for (int j = 0; j < trees_; j++)
+                {
                     addPointToTree(tree_roots_[j], old_size + i);
                 }
-            }            
+            }
         }
-    }
 
+        return vec_ret;
+    }
 
     flann_algorithm_t getType() const
     {
