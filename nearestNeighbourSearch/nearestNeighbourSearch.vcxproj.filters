@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="vs_flann">
+      <UniqueIdentifier>{7aaad27d-92cd-408b-a2a3-edf282abbd7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vs_flann\algorithms">
+      <UniqueIdentifier>{10914461-3636-4561-a00a-14f44650b222}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vs_flann\util">
+      <UniqueIdentifier>{c1f99a57-3633-452a-954e-ff2fbad650c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vs_flann\ext">
+      <UniqueIdentifier>{a6530acb-0e57-42a5-a34f-95a47310af7b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="flann\ext\lz4.c">
+      <Filter>vs_flann\ext</Filter>
+    </ClCompile>
+    <ClCompile Include="flann\ext\lz4hc.c">
+      <Filter>vs_flann\ext</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="flann\algorithms\all_indices.h">
+      <Filter>vs_flann\algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\algorithms\center_chooser.h">
+      <Filter>vs_flann\algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\algorithms\dist.h">
+      <Filter>vs_flann\algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\algorithms\hierarchical_clustering_index.h">
+      <Filter>vs_flann\algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\algorithms\nn_index.h">
+      <Filter>vs_flann\algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\util\allocator.h">
+      <Filter>vs_flann\util</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\util\any.h">
+      <Filter>vs_flann\util</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\util\dynamic_bitset.h">
+      <Filter>vs_flann\util</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\util\heap.h">
+      <Filter>vs_flann\util</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\util\logger.h">
+      <Filter>vs_flann\util</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\util\matrix.h">
+      <Filter>vs_flann\util</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\util\object_factory.h">
+      <Filter>vs_flann\util</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\util\params.h">
+      <Filter>vs_flann\util</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\util\random.h">
+      <Filter>vs_flann\util</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\util\result_set.h">
+      <Filter>vs_flann\util</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\util\sampling.h">
+      <Filter>vs_flann\util</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\util\saving.h">
+      <Filter>vs_flann\util</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\util\serialization.h">
+      <Filter>vs_flann\util</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\util\timer.h">
+      <Filter>vs_flann\util</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\config.h">
+      <Filter>vs_flann</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\defines.h">
+      <Filter>vs_flann</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\flann.hpp">
+      <Filter>vs_flann</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\general.h">
+      <Filter>vs_flann</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\ext\lz4.h">
+      <Filter>vs_flann\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="flann\ext\lz4hc.h">
+      <Filter>vs_flann\ext</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
