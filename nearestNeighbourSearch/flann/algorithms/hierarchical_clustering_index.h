@@ -101,7 +101,7 @@ public:
         memoryCounter_ = 0;
 
         branching_ = get_param(index_params_,"branching",32);
-        centers_init_ = get_param(index_params_,"centers_init", FLANN_CENTERS_RANDOM);
+        centers_init_ = get_param(index_params_, "centers_init", FLANN_CENTERS_GROUPWISE);
         trees_ = get_param(index_params_,"trees",4);
         leaf_max_size_ = get_param(index_params_,"leaf_max_size",100);
 
